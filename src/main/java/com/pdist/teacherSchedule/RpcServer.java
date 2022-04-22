@@ -2,8 +2,8 @@ package com.pdist.teacherSchedule;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pdist.teacherSchedule.schedule.Model.Message;
-import com.pdist.teacherSchedule.schedule.Service.MessageService;
+import com.pdist.teacherSchedule.model.Message;
+import com.pdist.teacherSchedule.service.MessageService;
 import com.rabbitmq.client.StringRpcServer;
 import com.rabbitmq.client.Channel;
 
