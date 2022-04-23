@@ -1,6 +1,7 @@
 package com.pdist.teacherSchedule.service;
 
-import com.pdist.teacherSchedule.ClientRPC;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pdist.teacherSchedule.amqp.QueueSender;
 import com.pdist.teacherSchedule.dto.ScheduleRequest;
 import com.pdist.teacherSchedule.model.Message;
 import com.pdist.teacherSchedule.model.Schedule;
@@ -22,6 +23,8 @@ public class ScheduleService {
     private ScheduleRepository scheduleRepository;
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private QueueSender queueSender;
 
     public List<Schedule> read() {
         return this.scheduleRepository.findAll();
@@ -34,8 +37,7 @@ public class ScheduleService {
     @Transactional
     public Schedule create(ScheduleRequest scheduleRequest){
         Schedule schedule = scheduleRequest.toSchedule(usuarioRepository);
-        Schedule newSchedule = this.scheduleRepository.save(schedule);
-        return newSchedule;
+        return this.scheduleRepository.save(schedule);
     }
 
     @Transactional
@@ -44,20 +46,20 @@ public class ScheduleService {
         Schedule newSchedule = this.scheduleRepository.save(schedule);
         for(Usuario student : schedule.getStudents()) {
             if(oldSchedule.getStudents().contains(student))
-                sendMessage(newSchedule, student, "Horário Atualizado");
+                this.sendMessage(newSchedule, student, "Horário Atualizado");
             else
-                sendMessage(newSchedule, student, "Novo Horário Cadastrado");
+                this.sendMessage(newSchedule, student, "Novo Horário Cadastrado");
         }
 
         for(Usuario studentOld : oldSchedule.getStudents()) {
             if(!newSchedule.getStudents().contains(studentOld))
-                sendMessage(newSchedule, studentOld, "Horário Removido");
+                this.sendMessage(newSchedule, studentOld, "Horário Removido");
         }
 
         return newSchedule;
     }
 
-    public static void sendMessage(Schedule schedule, Usuario student, String title) {
+    public void sendMessage(Schedule schedule, Usuario student, String title) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Message message = new Message();
 
@@ -68,7 +70,15 @@ public class ScheduleService {
         message.setDateTime(new Timestamp(System.currentTimeMillis()));
         message.setDescription("Gostariamos de notificar que sobre a aula em " +
                 dateFormat.format(schedule.getDateTimeBegin()));
-        ClientRPC.sendMessage(message);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String messageValue = "";
+        try {
+            messageValue = objectMapper.writeValueAsString(message);
+        } catch(Exception e) {}
+
+        System.out.println("[.] Enviando mensagem para ser salva");
+        queueSender.send(messageValue);
     }
 
     public void delete(Long id){
