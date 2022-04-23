@@ -11,6 +11,7 @@
 	<groupId>com.pdist</groupId>
 	<artifactId>teacherSchedule</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>teacherSchedule</name>
 	<description>teacherSchedule Project</description>
 	<properties>
@@ -101,11 +102,6 @@
 					<programs>
 						<program>
 							<mainClass>WorkerProcess</mainClass>
-							<name>worker</name>
-						</program>
-						<program>
-							<mainClass>OneOffProcess</mainClass>
-							<name>oneoff</name>
 						</program>
 					</programs>
 				</configuration>
