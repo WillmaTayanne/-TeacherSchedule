@@ -33,8 +33,8 @@ public class UsuarioService {
     @Transactional
     public Usuario create(Usuario usuario) {
         List<Usuario> users = this.read();
-        List<Usuario> filterUsers = users.stream().filter(user -> user.getRegistration().equals(usuario.getRegistration()) &&
-                user.getEmail().equals(usuario.getEmail()) && user.getCpf().equals(usuario.getCpf())).toList();
+        List<Usuario> filterUsers = users.stream().filter(user -> user.getRegistration().equals(usuario.getRegistration()) ||
+                user.getEmail().equals(usuario.getEmail()) || user.getCpf().equals(usuario.getCpf())).toList();
         return filterUsers.size() == 0 ? this.usuarioRepository.save(usuario) : null;
     }
 
