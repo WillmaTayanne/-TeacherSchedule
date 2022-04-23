@@ -102,6 +102,7 @@
 					<programs>
 						<program>
 							<mainClass>WorkerProcess</mainClass>
+							<name>worker</name>
 						</program>
 					</programs>
 				</configuration>
