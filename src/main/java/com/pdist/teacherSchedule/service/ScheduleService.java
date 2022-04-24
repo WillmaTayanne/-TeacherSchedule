@@ -36,6 +36,11 @@ public class ScheduleService {
         return this.scheduleRepository.findById(id).orElse(null);
     }
 
+    public List<Schedule> readForUser(Long idUser) {
+        return this.read().stream().filter(schedule -> schedule.getTeacher().getId().equals(idUser) ||
+                schedule.getStudents().stream().filter(s -> s.getId().equals(idUser)).toList().size() > 0).toList();
+    }
+
     @Transactional
     public Schedule create(ScheduleRequest scheduleRequest){
         Schedule schedule = scheduleRequest.toSchedule(usuarioRepository);

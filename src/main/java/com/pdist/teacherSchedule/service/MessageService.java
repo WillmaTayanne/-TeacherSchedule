@@ -27,6 +27,11 @@ public class MessageService {
         return this.messageRepository.findById(id).orElse(null);
     }
 
+    public List<Message> readForUser(Long idUser){
+        return this.read().stream().filter(message -> message.getUserIdOrigin().getId().equals(idUser) ||
+                message.getUserIdDestination().getId().equals(idUser)).toList();
+    }
+
     @Transactional
     public Message push(Message message){
         return this.messageRepository.save(message);

@@ -25,6 +25,11 @@ public class MessageController {
         return this.messageService.readById(id);
     }
 
+    @GetMapping("/message-user/{id}")
+    public List<Message> readForUser(@PathVariable("id") Long id) {
+        return this.messageService.readForUser(id);
+    }
+
     @PostMapping("/message")
     public Message create(@RequestBody MessageRequest messageRequest){
         return this.messageService.create(messageRequest);

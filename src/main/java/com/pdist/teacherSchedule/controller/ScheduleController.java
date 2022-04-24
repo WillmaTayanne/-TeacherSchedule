@@ -25,6 +25,11 @@ public class ScheduleController {
         return this.scheduleService.readById(id);
     }
 
+    @GetMapping("/schedule-user/{id}")
+    public List<Schedule> readForUser(@PathVariable("id") Long id) {
+        return this.scheduleService.readForUser(id);
+    }
+
     @PostMapping("/schedule")
     public Schedule create(@RequestBody ScheduleRequest scheduleRequest){
         return this.scheduleService.create(scheduleRequest);
