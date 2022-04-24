@@ -15,7 +15,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public Usuario login(@RequestBody Login login) {
         return this.usuarioService.login(login);
     }
