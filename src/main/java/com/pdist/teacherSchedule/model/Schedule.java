@@ -1,6 +1,6 @@
 package com.pdist.teacherSchedule.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +18,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Schedule {
     @EqualsAndHashCode.Include
     @Id
@@ -33,7 +34,6 @@ public class Schedule {
     private Usuario teacher;
 
     @OneToMany(mappedBy = "id")
-    @JsonIgnore
     private List<Usuario> students = new ArrayList<>();
 
     @NotNull

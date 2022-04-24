@@ -1,6 +1,7 @@
 package com.pdist.teacherSchedule.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.pdist.teacherSchedule.amqp.QueueSender;
 import com.pdist.teacherSchedule.dto.ScheduleRequest;
 import com.pdist.teacherSchedule.model.Message;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ScheduleService {
@@ -41,26 +43,17 @@ public class ScheduleService {
     }
 
     @Transactional
-    public Schedule update(Schedule schedule){
-        Schedule oldSchedule = this.scheduleRepository.getById(schedule.getId());
-        Schedule newSchedule = this.scheduleRepository.save(schedule);
-        for(Usuario student : schedule.getStudents()) {
-            if(oldSchedule.getStudents().contains(student))
-                this.sendMessage(newSchedule, student, "Horário Atualizado");
-            else
-                this.sendMessage(newSchedule, student, "Novo Horário Cadastrado");
-        }
+    public Schedule update(Schedule schedule) {
+        Schedule scheduleSave = this.scheduleRepository.save(schedule);
 
-        for(Usuario studentOld : oldSchedule.getStudents()) {
-            if(!newSchedule.getStudents().contains(studentOld))
-                this.sendMessage(newSchedule, studentOld, "Horário Removido");
-        }
+        for(Usuario student : scheduleSave.getStudents())
+            this.sendMessage(scheduleSave, student, "Notificação de Horário");
 
-        return newSchedule;
+        return scheduleSave;
     }
 
     public void sendMessage(Schedule schedule, Usuario student, String title) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         Message message = new Message();
 
         message.setRead(false);
@@ -72,6 +65,7 @@ public class ScheduleService {
                 dateFormat.format(schedule.getDateTimeBegin()));
 
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         String messageValue = "";
         try {
             messageValue = objectMapper.writeValueAsString(message);
