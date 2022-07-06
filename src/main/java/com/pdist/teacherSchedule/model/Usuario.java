@@ -49,7 +49,7 @@ public class Usuario {
     @JsonIgnore
     private List<Message> messages = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "students")
     @JsonIgnore
     private List<Schedule> schedules = new ArrayList<>();
 }

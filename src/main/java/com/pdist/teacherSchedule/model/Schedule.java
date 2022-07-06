@@ -34,6 +34,7 @@ public class Schedule {
     private Usuario teacher;
 
     @ManyToMany
+    @JoinTable(name = "schedule_user", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "schedule_id"))
     private List<Usuario> students = new ArrayList<>();
 
     @NotNull
