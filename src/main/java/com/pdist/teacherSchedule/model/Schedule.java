@@ -33,7 +33,7 @@ public class Schedule {
     @JoinColumn(name = "id_teacher")
     private Usuario teacher;
 
-    @OneToMany(mappedBy = "id")
+    @ManyToMany
     private List<Usuario> students = new ArrayList<>();
 
     @NotNull

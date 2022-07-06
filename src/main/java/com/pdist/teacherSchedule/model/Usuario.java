@@ -48,4 +48,8 @@ public class Usuario {
     @OneToMany(mappedBy = "id")
     @JsonIgnore
     private List<Message> messages = new ArrayList<>();
+
+    @ManyToMany
+    @JsonIgnore
+    private List<Schedule> schedules = new ArrayList<>();
 }
