@@ -61,8 +61,7 @@ public class ScheduleService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         Message message = new Message();
 
-        Timestamp timeBegin = schedule.getDateTimeBegin();
-        timeBegin.setTime(timeBegin.getTime() - 10800000);
+        Timestamp timeBegin = new Timestamp(schedule.getDateTimeBegin().getTime() - 10800000);
 
         message.setRead(false);
         message.setTitle(title);
