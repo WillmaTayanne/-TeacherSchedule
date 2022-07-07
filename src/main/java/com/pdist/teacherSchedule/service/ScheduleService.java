@@ -61,13 +61,16 @@ public class ScheduleService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         Message message = new Message();
 
+        Timestamp timeBegin = schedule.getDateTimeBegin();
+        timeBegin.setTime(timeBegin.getTime() - 10800000);
+
         message.setRead(false);
         message.setTitle(title);
         message.setUserIdOrigin(schedule.getTeacher());
         message.setUserIdDestination(student);
         message.setDateTime(new Timestamp(System.currentTimeMillis()));
         message.setDescription("Gostariamos de notificar que sobre a aula em " +
-                dateFormat.format(schedule.getDateTimeBegin()));
+                dateFormat.format(timeBegin));
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
